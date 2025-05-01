@@ -6,13 +6,14 @@ const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [connected, setConnected] = useState(false);
+  const backendURL = process.env.VITE_BACKEND_URL;
   
   // Initialize socket on component mount
   useEffect(() => {
     console.log('Initializing Socket.io connection');
     
     // Create socket instance
-    const socketInstance = io('http://localhost:5000', {
+    const socketInstance = io('${backendURL}', {
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
       autoConnect: true,

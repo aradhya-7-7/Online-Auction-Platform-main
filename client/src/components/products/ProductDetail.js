@@ -6,7 +6,7 @@ import AuthContext from '../../context/AuthContext';
 const ProductDetail = ({ showAlert }) => {
   const { id } = useParams();
   const { isAuthenticated, user } = useContext(AuthContext);
-  
+  const backendURL = process.env.VITE_BACKEND_URL;
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeAuctions, setActiveAuctions] = useState([]);
@@ -17,11 +17,11 @@ const ProductDetail = ({ showAlert }) => {
         setLoading(true);
         
         // Fetch product details
-        const productRes = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const productRes = await axios.get(`${backendURL}/api/products/${id}`);
         setProduct(productRes.data);
         
         // Fetch active auctions for this product
-        const auctionsRes = await axios.get(`http://localhost:5000/api/auctions?product=${id}&status=active`);
+        const auctionsRes = await axios.get(`${backendURL}/api/auctions?product=${id}&status=active`);
         
         if (auctionsRes.data.auctions) {
           setActiveAuctions(auctionsRes.data.auctions);
@@ -87,7 +87,7 @@ const ProductDetail = ({ showAlert }) => {
                     src={product.images && product.images.length > 0
                       ? product.images[0].startsWith('http')
                         ? product.images[0]
-                        : `http://localhost:5000${product.images[0]}`
+                        : `${backendURL}${product.images[0]}`
                       : `https://via.placeholder.com/400x300?text=${product.name}`}
                     alt={product.name}
                     className="img-fluid rounded"
@@ -100,7 +100,7 @@ const ProductDetail = ({ showAlert }) => {
                           <img
                             src={image.startsWith('http')
                               ? image
-                              : `http://localhost:5000${image}`}
+                              : `${backendURL}${image}`}
                             alt={`${product.name} ${index + 2}`}
                             className="img-thumbnail"
                           />

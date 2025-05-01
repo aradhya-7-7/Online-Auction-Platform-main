@@ -20,7 +20,7 @@ const CreateProduct = ({ showAlert }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   
   const { name, description, category, condition, startingPrice } = formData;
-  
+  const backendURL = process.env.VITE_BACKEND_URL;
   // List of 10 most popular auction categories
   const categories = [
     { value: 'Electronics', label: 'Electronics & Gadgets' },
@@ -71,7 +71,7 @@ const CreateProduct = ({ showAlert }) => {
         formData.append('images', file);
       });
 
-      const response = await axios.post('http://localhost:5000/api/uploads', formData, {
+      const response = await axios.post('${backendURL}/api/uploads', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'x-auth-token': localStorage.getItem('token')
@@ -114,7 +114,7 @@ const CreateProduct = ({ showAlert }) => {
       }
       
       // Create product
-      const res = await axios.post('http://localhost:5000/api/products', {
+      const res = await axios.post('${backendURL}/api/products', {
         name,
         description,
         category,

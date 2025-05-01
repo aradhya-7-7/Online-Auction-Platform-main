@@ -18,6 +18,7 @@ const AuctionDetail = ({ showAlert }) => {
   const [timeRemaining, setTimeRemaining] = useState('');
   const timerRef = useRef(null);
   const bidListRef = useRef(null);
+  const backendURL = process.env.VITE_BACKEND_URL;
   
   // Fetch auction details and bids
   useEffect(() => {
@@ -26,14 +27,14 @@ const AuctionDetail = ({ showAlert }) => {
         setLoading(true);
         
         // Fetch auction details
-        const auctionRes = await axios.get(`http://localhost:5000/api/auctions/${id}`);
+        const auctionRes = await axios.get(`${backendURL}/api/auctions/${id}`);
         setAuction(auctionRes.data);
         
         // Set initial bid amount to current bid + minimum increment
         setBidAmount(auctionRes.data.currentBid + auctionRes.data.minBidIncrement);
         
         // Fetch bids for this auction
-        const bidsRes = await axios.get(`http://localhost:5000/api/bids/auction/${id}`);
+        const bidsRes = await axios.get(`${backendURL}/api/bids/auction/${id}`);
         setBids(bidsRes.data);
         
         setLoading(false);
@@ -215,7 +216,7 @@ const AuctionDetail = ({ showAlert }) => {
     
     try {
       // Place bid via API
-      const res = await axios.post('http://localhost:5000/api/bids', {
+      const res = await axios.post('${backendURL}/api/bids', {
         auction: id,
         amount: parseFloat(bidAmount)
       });
@@ -355,7 +356,7 @@ const AuctionDetail = ({ showAlert }) => {
                       src={auction.product.images && auction.product.images.length > 0
                         ? auction.product.images[0].startsWith('http')
                           ? auction.product.images[0]
-                          : `http://localhost:5000${auction.product.images[0]}`
+                          : `${backendURL}${auction.product.images[0]}`
                         : `https://via.placeholder.com/400x300?text=${auction.product.name}`}
                       alt={auction.product.name}
                       className="img-fluid rounded"
@@ -381,7 +382,7 @@ const AuctionDetail = ({ showAlert }) => {
                           <img
                             src={image.startsWith('http')
                               ? image
-                              : `http://localhost:5000${image}`}
+                              : `${backendURL}${image}`}
                             alt={`${auction.product.name} ${index + 2}`}
                             className="img-thumbnail"
                             style={{height: '60px', objectFit: 'cover'}}

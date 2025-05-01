@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const ProductList = ({ showAlert }) => {
+  const backendURL = process.env.VITE_BACKEND_URL;
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,7 +35,7 @@ const ProductList = ({ showAlert }) => {
           queryParams.append('seller', filters.seller);
         }
         
-        const res = await axios.get(`http://localhost:5000/api/products?${queryParams.toString()}`);
+        const res = await axios.get(`${backendURL}/api/products?${queryParams.toString()}`);
         
         setProducts(res.data.products);
         setTotalPages(res.data.totalPages);
@@ -151,7 +152,7 @@ const ProductList = ({ showAlert }) => {
                   src={product.images && product.images.length > 0
                     ? product.images[0].startsWith('http')
                       ? product.images[0]
-                      : `http://localhost:5000${product.images[0]}`
+                      : `${backendURL}${product.images[0]}`
                     : `https://via.placeholder.com/300x200?text=${product.name}`}
                   className="card-img-top"
                   alt={product.name}

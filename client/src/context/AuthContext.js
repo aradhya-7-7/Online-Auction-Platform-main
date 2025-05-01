@@ -9,6 +9,8 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const backendURL = process.env.VITE_BACKEND_URL;
+
   // Set axios default headers
   if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -16,12 +18,11 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
   }
 
-  // Load user on initial render
   useEffect(() => {
     const loadUser = async () => {
       if (token) {
         try {
-          const res = await axios.get('http://localhost:5000/api/users/profile');
+          const res = await axios.get(`${backendURL}/api/users/profile`);
           setUser(res.data);
           setIsAuthenticated(true);
         } catch (err) {
@@ -38,45 +39,38 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, [token]);
 
-  // Register user
   const register = async (formData) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/users/register', formData);
-      
+      const res = await axios.post(`${backendURL}/api/users/register`, formData);
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
       setIsAuthenticated(true);
-      
       return { success: true };
     } catch (err) {
-      return { 
-        success: false, 
-        error: err.response?.data?.message || 'Registration failed' 
+      return {
+        success: false,
+        error: err.response?.data?.message || 'Registration failed',
       };
     }
   };
 
-  // Login user
   const login = async (email, password) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/users/login', { email, password });
-      
+      const res = await axios.post(`${backendURL}/api/users/login`, { email, password });
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
       setIsAuthenticated(true);
-      
       return { success: true };
     } catch (err) {
-      return { 
-        success: false, 
-        error: err.response?.data?.message || 'Login failed' 
+      return {
+        success: false,
+        error: err.response?.data?.message || 'Login failed',
       };
     }
   };
 
-  // Logout user
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
@@ -84,29 +78,27 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
-  // Update user profile
   const updateProfile = async (formData) => {
     try {
-      const res = await axios.put('http://localhost:5000/api/users/profile', formData);
+      const res = await axios.put(`${backendURL}/api/users/profile`, formData);
       setUser(res.data);
       return { success: true };
     } catch (err) {
-      return { 
-        success: false, 
-        error: err.response?.data?.message || 'Profile update failed' 
+      return {
+        success: false,
+        error: err.response?.data?.message || 'Profile update failed',
       };
     }
   };
 
-  // Change password
   const changePassword = async (currentPassword, newPassword) => {
     try {
-      await axios.put('http://localhost:5000/api/users/password', { currentPassword, newPassword });
+      await axios.put(`${backendURL}/api/users/password`, { currentPassword, newPassword });
       return { success: true };
     } catch (err) {
-      return { 
-        success: false, 
-        error: err.response?.data?.message || 'Password change failed' 
+      return {
+        success: false,
+        error: err.response?.data?.message || 'Password change failed',
       };
     }
   };
@@ -122,7 +114,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         updateProfile,
-        changePassword
+        changePassword,
       }}
     >
       {children}
@@ -130,4 +122,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export default AuthContext; 
+export default AuthContext;

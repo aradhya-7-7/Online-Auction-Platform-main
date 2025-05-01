@@ -6,7 +6,7 @@ const Home = () => {
   const [featuredAuctions, setFeaturedAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const backendURL = process.env.VITE_BACKEND_URL;
   useEffect(() => {
     // Check if user is authenticated
     const token = localStorage.getItem('token');
@@ -14,7 +14,7 @@ const Home = () => {
 
     const fetchFeaturedAuctions = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/auctions/active');
+        const res = await axios.get('${backendURL}/api/auctions/active');
         setFeaturedAuctions(res.data.slice(0, 4)); // Get first 4 active auctions
         setLoading(false);
       } catch (err) {
@@ -77,7 +77,7 @@ const Home = () => {
                     src={auction.product.images && auction.product.images.length > 0
                       ? auction.product.images[0].startsWith('http')
                         ? auction.product.images[0]
-                        : `http://localhost:5000${auction.product.images[0]}`
+                        : `${backendURL}${auction.product.images[0]}`
                       : `https://via.placeholder.com/300x200?text=${auction.product.name}`}
                     className="card-img-top"
                     alt={auction.product.name}

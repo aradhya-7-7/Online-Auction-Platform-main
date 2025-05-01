@@ -7,7 +7,7 @@ import { useSocket } from '../../context/SocketContext';
 const AuctionList = ({ showAlert }) => {
   const { isAuthenticated, user } = useContext(AuthContext);
   const socket = useSocket();
-  
+  const backendURL = process.env.VITE_BACKEND_URL;
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -94,7 +94,7 @@ const AuctionList = ({ showAlert }) => {
           queryParams.append('seller', filters.seller);
         }
         
-        const res = await axios.get(`http://localhost:5000/api/auctions?${queryParams.toString()}`);
+        const res = await axios.get(`${backendURL}/api/auctions?${queryParams.toString()}`);
         
         if (res.data && res.data.auctions) {
           setAuctions(res.data.auctions);
@@ -257,7 +257,7 @@ const AuctionList = ({ showAlert }) => {
                     src={auction.product && auction.product.images && auction.product.images.length > 0
                       ? auction.product.images[0].startsWith('http')
                         ? auction.product.images[0]
-                        : `http://localhost:5000${auction.product.images[0]}`
+                        : `${backendURL}${auction.product.images[0]}`
                       : `https://via.placeholder.com/300x200?text=${auction.product ? auction.product.name : 'Auction Item'}`}
                     className="card-img-top"
                     alt={auction.product ? auction.product.name : 'Auction Item'}

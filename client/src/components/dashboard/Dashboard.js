@@ -5,7 +5,7 @@ import AuthContext from '../../context/AuthContext';
 
 const Dashboard = ({ showAlert }) => {
   const { user } = useContext(AuthContext);
-  
+  const backendURL = process.env.VITE_BACKEND_URL;
   const [myProducts, setMyProducts] = useState([]);
   const [myAuctions, setMyAuctions] = useState([]);
   const [myBids, setMyBids] = useState([]);
@@ -19,19 +19,19 @@ const Dashboard = ({ showAlert }) => {
         setLoading(true);
         
         // Fetch user's products
-        const productsRes = await axios.get('http://localhost:5000/api/products/user/me');
+        const productsRes = await axios.get('${backendURL}/api/products/user/me');
         setMyProducts(productsRes.data);
         
         // Fetch user's auctions
-        const auctionsRes = await axios.get('http://localhost:5000/api/auctions/user/me');
+        const auctionsRes = await axios.get('${backendURL}/api/auctions/user/me');
         setMyAuctions(auctionsRes.data);
         
         // Fetch user's bids
-        const bidsRes = await axios.get('http://localhost:5000/api/bids/user/me');
+        const bidsRes = await axios.get('${backendURL}/api/bids/user/me');
         setMyBids(bidsRes.data);
         
         // Fetch user's won auctions
-        const wonRes = await axios.get('http://localhost:5000/api/bids/won');
+        const wonRes = await axios.get('${backendURL}/api/bids/won');
         setWonAuctions(wonRes.data);
         
         setLoading(false);
@@ -48,7 +48,7 @@ const Dashboard = ({ showAlert }) => {
   const handleDeleteProduct = async (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/products/${id}`);
+        await axios.delete(`${backendURL}/api/products/${id}`);
         setMyProducts(myProducts.filter(product => product._id !== id));
         showAlert('Product deleted successfully', 'success');
       } catch (err) {
@@ -60,7 +60,7 @@ const Dashboard = ({ showAlert }) => {
   const handleCancelAuction = async (id) => {
     if (window.confirm('Are you sure you want to cancel this auction?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/auctions/${id}`);
+        await axios.delete(`${backendURL}/api/auctions/${id}`);
         setMyAuctions(myAuctions.map(auction => 
           auction._id === id ? { ...auction, status: 'cancelled' } : auction
         ));

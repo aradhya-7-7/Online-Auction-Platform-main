@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 const ImageWithFallback = ({ src, fallbackSrc, alt, ...props }) => {
   const [imgSrc, setImgSrc] = useState(src);
   const [imgError, setImgError] = useState(false);
-
+  const backendURL = process.env.VITE_BACKEND_URL;
   const onError = () => {
     if (!imgError) {
       setImgSrc(fallbackSrc);
@@ -29,16 +29,16 @@ const ImageWithFallback = ({ src, fallbackSrc, alt, ...props }) => {
     
     // If it starts with 'uploads/' or '/uploads/', prepend server URL
     if (url.startsWith('uploads/') || url.startsWith('/uploads/')) {
-      return `http://localhost:5000/${url.startsWith('/') ? url.substring(1) : url}`;
+      return `${backendURL}/${url.startsWith('/') ? url.substring(1) : url}`;
     }
     
     // If it's a relative URL, make sure it's correct
     if (url.startsWith('/')) {
-      return `http://localhost:5000${url}`;
+      return `${backendURL}${url}`;
     }
     
     // Otherwise, assume it's relative to server
-    return `http://localhost:5000/${url}`;
+    return `${backendURL}/${url}`;
   };
 
   return (

@@ -7,7 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 const CreateAuction = ({ showAlert }) => {
   const { productId } = useParams();
   const navigate = useNavigate();
-  
+  const backendURL = process.env.VITE_BACKEND_URL;
   const [product, setProduct] = useState(null);
   const [userProducts, setUserProducts] = useState([]);
   const [isScheduled, setIsScheduled] = useState(false);
@@ -30,7 +30,7 @@ const CreateAuction = ({ showAlert }) => {
         
         // If productId is provided, fetch that specific product
         if (productId) {
-          const res = await axios.get(`http://localhost:5000/api/products/${productId}`);
+          const res = await axios.get(`${backendURL}/api/products/${productId}`);
           setProduct(res.data);
           
           // Set starting bid to product's starting price by default
@@ -42,7 +42,7 @@ const CreateAuction = ({ showAlert }) => {
         }
         
         // Always fetch user's products for the dropdown
-        const userProductsRes = await axios.get('http://localhost:5000/api/products/user/me');
+        const userProductsRes = await axios.get('${backendURL}/api/products/user/me');
         
         if (userProductsRes.data.length === 0) {
           showAlert('You need to create a product first before creating an auction', 'info');
@@ -97,7 +97,7 @@ const CreateAuction = ({ showAlert }) => {
         }));
       } else {
         // If not found (shouldn't happen), fetch it
-        const res = await axios.get(`http://localhost:5000/api/products/${newProductId}`);
+        const res = await axios.get(`${backendURL}/api/products/${newProductId}`);
         setProduct(res.data);
         setFormData(prevState => ({
           ...prevState,
@@ -174,7 +174,7 @@ const CreateAuction = ({ showAlert }) => {
       
       console.log('Submitting auction data:', auctionData);
       
-      const res = await axios.post('http://localhost:5000/api/auctions', auctionData, config);
+      const res = await axios.post('${backendURL}/api/auctions', auctionData, config);
       
       console.log('Auction created:', res.data);
       showAlert('Auction created successfully!', 'success');
@@ -271,7 +271,7 @@ const CreateAuction = ({ showAlert }) => {
                             src={product.images && product.images.length > 0
                               ? product.images[0].startsWith('http')
                                 ? product.images[0]
-                                : `http://localhost:5000${product.images[0]}`
+                                : `${backendURL}${product.images[0]}`
                               : `https://via.placeholder.com/200x150?text=${product.name}`}
                             alt={product.name}
                             className="img-fluid rounded"
